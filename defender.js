@@ -6,6 +6,8 @@ function preload () {
     game.load.image('star', 'assets/star2.png');
     game.load.image('baddie', 'assets/space-baddie.png');
     game.load.image('lazer', 'assets/viereck.png');
+    game.load.image('stein', 'assets/Stein.png');
+    game.load.image('circle', 'assets/circle.png');
     //game.load.atlas('', 'assets/laser.png', 'assets/laser.json');
     
     game.load.audio('blaster', 'assets/blaster.mp3');
@@ -16,8 +18,8 @@ function preload () {
 
 }
 
+var rocks;
 var stars;
-var baddie;
 var baddies;
 var player;
 var cursors;
@@ -36,13 +38,16 @@ var speedBaddies = 200;
 var speedBaddiesChange = 30;
 var bullets;
 var maxBulletDistance = 400;
+var time;
+var kills = 0
+var finish;
 
 
 
 function create () {
     
 
-    game.world.setBounds(0, 0, 800*4, 600);
+    game.world.setBounds(0, 0, 800*4, 600*3);
     
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -61,11 +66,34 @@ function create () {
     baddies = game.add.group();
     
     
-    for (var i = 0; i < 48; i++)
+    for (var i = 0; i < 18; i++)
     {
         baddies.create(game.world.randomX / 2 + game.world.width / 2, game.world.randomY, 'baddie');
         
     }
+    
+    game.physics.enable(baddies, Phaser.Physics.ARCADE);
+
+	for (var i in baddies.children) {
+        baddies.children[i].body.velocity.setTo (speedBaddies * (Math.random ()  - 0.5), speedBaddies * (Math.random () - 0.5));
+        baddies.children[i].body.collideWorldBounds = true;
+        baddies.children[i].body.bounce.setTo(1,1);
+	}
+    
+
+    
+    rocks = game.add.group();
+    game.physics.arcade.enable(rocks);
+    rocks.enableBody = true;
+    //rocks.anchor.x = 0.5;
+    //rocks.anchor.y = 0.5;
+    var ledge = rocks.create(0, 500, 'stein');
+    ledge.body.immovable = true;
+    ledge = rocks.create(400, 1100, 'stein');
+    ledge.body.immovable = true;
+    //rocks.body.collideWorldBounds = true;
+        
+    
     
     game.physics.enable(baddies, Phaser.Physics.ARCADE);
 
@@ -87,6 +115,13 @@ function create () {
     player.anchor.x = 0.5;
     player.anchor.y = 0.5;
     player.body.collideWorldBounds = true;
+    
+    finish = game.add.sprite(3050, 1650, 'circle');
+    finish.anchor.x = 0.5;
+    finish.anchor.y = 0.5;
+    game.physics.arcade.enable(finish);
+    finish.enableBody = true;
+    
 
 
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.5);
@@ -110,7 +145,10 @@ function create () {
 function update () {
     
     
+    
     baddies.forEachAlive(bewegung, this);
+    
+    game.physics.arcade.collide(baddies, rocks);
     
     
     
@@ -149,6 +187,8 @@ function update () {
     
     game.physics.arcade.overlap (bullets, baddies, killBaddie, null, this);
     game.physics.arcade.overlap (player, baddies, killPlayer, null, this);
+    game.physics.arcade.overlap (player, rocks, killPlayer, null, this);
+    game.physics.arcade.overlap (player, finish, nextLevel, null, this);
     //setTimeout(function(){ game.physics.arcade.overlap (player, baddies, killPlayer, null, this);    }, 3000);
     
     bullets.forEachAlive(killBullet, this);
@@ -182,7 +222,7 @@ function update () {
 
 
 
-function killPlayer (player, baddie) {
+function killPlayer (player, baddie, rock) {
     player.kill ();
     playerDeath.play();
 }
@@ -190,6 +230,7 @@ function killPlayer (player, baddie) {
 function killBaddie (bullet, baddie) {
     baddie.kill ();
     baddieDeath.play();
+    kills++
 }
 
 
@@ -203,6 +244,9 @@ function bewegung (baddie) {
     if (baddie.body.velocity.y < -speedBaddies) {baddie.body.velocity.y = -speedBaddies} 
 }
 
+function nextLevel () {
+    alert('You Win! /n Time: /n Kills: ' + kills)
+}
 
 
 
