@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        
+        <title>Snake</title>
+        
+        <style>
+
+            #myCanvas {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            } 
+            
+            #trophy {
+                position: fixed;
+                top: 35%;
+                left: 45.5%;
+                transform: translate(-50%, -50%);
+            }
+            
+            #highScore {
+                position: fixed;
+                top: 35%;
+                left: 47.5%;
+                transform: translate(-50%, -50%);
+            }
+            
+            #apple {
+                position: fixed;
+                top: 35%;
+                left: 52.5%;
+                transform: translate(-50%, -50%);
+            }
+            
+            #points {
+                position: fixed;
+                top: 35%;
+                left: 54.5%;
+                transform: translate(-50%, -50%);
+            }
+            
+            #heading {
+                position: fixed;
+                top: 22.5%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        
+        </style>
+        
+    </head>
+    
+    <body>
+        
+        <h1 id="heading">Snake</h1>
+        
+        <BR>
+           
+        posX:<l id="posX"></l><br>
+        posY:<l id="posY"></l><br> 
+        points:<l id="points"></l><br>
+        velO:<l id="velO"></l><br>
+        highScore:<l id="highScore"></l><br>
+        directionX:<l id="directionX"></l><br>
+        directionY:<l id="directionY"></l><br>
+        posX.length:<l id="posX.length"></l>
+            
+        <BR>
+            
+        <BR>
+            
+        <button type="button" onclick="go()">Go</button>
+        
+        <canvas id="myCanvas" width="200" height="200" style="border:2px solid #000000;"></canvas>
+            
+        <img id="trophy" src="https://st3.depositphotos.com/3636123/16888/v/450/depositphotos_168880790-stock-illustration-isolated-pixeled-trophy.jpg" alt="Trophy" width="32" height="32">
+            
+        <img id="apple" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAyVBMVEX/////AAAAAACaYzdWyy30AAB0dHSGhobCAAC0AAAwMDBLS0udZTjoAABtRidhYWGcXjdSwit7nDJTzi1BmiIhTRFkQCT/paX/6Oh1SyqWlpbcAACGAAC0tLRbOiDc3Nzo6OgtHRBRNB2TXzX/wsL/YWH/dHT/tLQ8T08YMzNmAAAkJCS6JyeCi4s9PT2EhIRXZmaUnJzQAAD/S0uKhYv/WFj/ubn/lpY8mxdHmCwjDgAvJTFzRiB/AAA0IhN2ljB6i3YUSABpWCcw3S9tAAAClElEQVR4nO3d21bTUBCAYSy2haa1yElpUA4itLRQjgoqKL7/Q3nFyp6L7LXdq8nMTv//tklnvuQyayUrKxXUbbl9qmKEcgjTD2H6IUw/hOmHMP0Qpl8ThR1h2uuvFvU/t0LrajM8IUSIUD+ECBHqhxAhQv18wuNg4Z02w5NHuPrFbeP3+/Ief/aKpnNtlMgnFG1sbr0ta2tb/EtHGyVCiBChfggRItQPIUL7wqHY7Vdf1AjhoWj+48hJ3NFkhTL57OkdQoQGQ4gQoX4IESLUb9mF5T2I84baDE8eYf/vTmkvfw7cDrUZnnzC3VZ5lp+uyRAitB9ChPZDiNB+CBGq7d0J7TJSeBk8oZprkXl28xUuDC9DiBAhQoQIESJEuLTCcbTQbTHC8YJMo3m36GK2Ftq52Ob52O3Zs/d58ITZhbPZfBQtnIr5gzeh7Ufemf3gCQNx3jRa2EtE2EOIECFChAgRIlxq4SRS+BQpfIoUTv7DNHK7nq27tYPn36zHdRM8oS3Om12Lvb1CeU3DTbq15doIERoMIUL7IURoP4QI7Zeq8PZDed/FkakKTz17fhRHIkSoFcIihAi1QliEEKFWCItSFd5/O3M6aaBQdt944VeECBGqhxAhQv0QIkSo3+2J25n4rRlCXwgR2g8hQvshRGg/hAjthxCh/RAitB9ChPZDiNB+CBHaDyFC+yFEaD+ECO2HEKH9ELplbuN84KbtEInN8rHY2yuUxb7rq/ri3/Uli31fW/Vpv5Gu+hAiRKgfQoQI9UOI8LWs5zTJ2261o8T0fOKutqgvlshvlOQ1A3MxfVHfKJFlhoR1fEkHIUKECBEiRIgQIUIdoeyqVW9XNZhkw5qFQ4QIESJEiBAhQoQIUxb+AxTECVyLcvMNAAAAAElFTkSuQmCC" alt="Apple" width="30" height="30">
+        
+            
+        <script>
+            
+            var c = document.getElementById("myCanvas");
+                
+            var ctx = c.getContext("2d");
+            
+            var snake = {
+                
+                posX: [0, 10, 20, 30],
+                posY: [0, 0, 0, 0]
+                
+            };
+
+            var point;
+            
+            var pointX = Math.round(Math.random() * 19) * 10
+            
+            var pointY = Math.round(Math.random() * 19) * 10
+            
+            var points = 0
+            
+            var directionX = 10
+            
+            var directionY = 0
+            
+            var velO = 100
+            
+            //var x = 1.1
+            
+            var highScore = 0
+            
+            
+            
+            
+            
+            
+            function go() {
+                
+                //reset()
+                
+                move() 
+                
+                var interval = setInterval(start, velO)
+                
+            }
+            
+            function start() {
+                
+                //reset()
+        
+                ctx.clearRect (0, 0, c.width, c.height)
+                
+                pointSpawn()
+                
+                snakeSpawn()
+                
+                if (pointX !== snake.posX [snake.posX.length - 1] || pointY !== snake.posY [snake.posY.length - 1]) {
+                    
+                    snake.posX.splice(0, 1);
+                    snake.posY.splice(0, 1);
+                    
+                }
+                
+                else {
+                    
+                   pointCollision()
+                   
+                }
+                
+                snakeCollision()
+                
+                teleport()
+                
+            }
+            
+            function move() {
+            
+                document.addEventListener ('keydown', function (event) {
+
+                    if (event.keyCode == 37 && directionX == 0) {
+
+                        directionX = -10
+                        directionY = 0
+
+                    }
+                    
+                    if (event.keyCode == 38 && directionY == 0) {
+
+                        directionX = 0
+                        directionY = -10
+
+                    }
+
+                    if (event.keyCode == 39 && directionX == 0) {
+
+                        directionX = 10
+                        directionY = 0
+
+                    }
+
+                    if (event.keyCode == 40 && directionY == 0) {
+
+                        directionX = 0
+                        directionY = 10
+
+                    }
+
+                })
+            
+            }
+            
+            function snakeSpawn () {
+                
+                snake.posX.push (snake.posX [snake.posX.length - 1] + directionX)
+                snake.posY.push (snake.posY [snake.posY.length - 1] + directionY)
+              
+                ctx.beginPath();
+
+                for (i = 0; i < snake.posX.length; i++) {
+                
+                    head = ctx.rect (snake.posX [snake.posX.length - i - 1], snake.posY [snake.posY.length - i - 1], 10, 10);
+                    
+                }
+                
+                ctx.fillStyle = "green";
+                ctx.fill();
+                
+                document.getElementById('posX').innerHTML = snake.posX;
+                document.getElementById('posY').innerHTML = snake.posY;
+                document.getElementById('points').innerHTML = points
+                document.getElementById('velO').innerHTML = velO
+                document.getElementById('highScore').innerHTML = highScore
+                document.getElementById('directionX').innerHTML = directionX
+                document.getElementById('directionY').innerHTML = directionY
+                document.getElementById('posX.length').innerHTML = snake.posX.length
+                  
+            }
+            
+            function pointSpawn() {
+                
+                ctx.beginPath();
+                
+                point = ctx.rect (pointX, pointY, 10, 10);
+                
+                ctx.fillStyle = "red";
+                ctx.fill();
+                
+            }
+            
+            function pointCollision() {
+                    
+                    pointX = Math.round (Math.random () * 19) * 10
+                    
+                    pointY = Math.round (Math.random () * 19) * 10
+                    
+                    pointSpawn()
+                        
+                    points ++ 
+                    
+            }
+            
+            function snakeCollision() {
+                
+                for (i = 0; i < snake.posX.length - 1; i++) {
+                        
+                        if  (snake.posX [snake.posX.length - 1] == snake.posX [i] && snake.posY [snake.posY.length - 1] == snake.posY [i]) {
+                     
+                            alert('Game Over')
+                                
+                            if (points > highScore) {
+                                    
+                                highScore = points
+                          
+                                
+                            }
+                     
+                            reset()
+                            
+                            }
+                
+                }
+                
+            }
+            
+            function reset () {
+                
+                //alert ('hi')
+                
+                snake = {
+                
+                    posX: [0, 10, 20, 30],
+                    posY: [0, 0, 0, 0],
+                //length: 4
+                
+                };
+                
+                pointX = Math.round(Math.random() * 20) * 10
+                pointY = Math.round(Math.random() * 20) * 10
+                
+                points = 0
+                
+                directionX = 10
+                directionY = 0
+                
+                velO = 100
+                
+            }
+            
+            function teleport() {
+                
+                if (snake.posX [snake.posX.length - 1] > c.width - 10) {
+                    
+                    //ctx.clearRect(posX[posX.length - 1], posY[posY.length - 1], 10, 10)
+                    
+                    //posX.splice(0, 1);
+                    //posX.push (0)
+                    snake.posX [snake.posX.length - 1] = 0;
+                }
+                
+                if (snake.posY [snake.posY.length - 1] > c.height - 10) {
+                    
+                    //ctx.clearRect(posX[posX.length - 1], posY[posY.length - 1], 10, 10)
+                    
+                    //posY.splice(0, 1);
+                    //posY.push (0)
+                    
+                    snake.posY [snake.posY.length - 1] = 0;
+                }
+                
+                if (snake.posX [snake.posX.length - 1] < 0) {
+                    
+                    //ctx.clearRect(posX[posX.length - 1], posY[posY.length - 1], 10, 10)
+                    
+                    snake.posX.splice(0, 1);
+                    snake.posX.push (c.width - 10)
+                    
+                }
+                
+                if (snake.posY [snake.posY.length - 1] < 0) {
+                    
+                    //ctx.clearRect(posX[posX.length - 1], posY[posY.length - 1], 10, 10)
+                    
+                    snake.posY.splice(0, 1);
+                    snake.posY.push (c.height - 10)
+                    
+                }
+                
+            }
+            
+            
+                
+            
+            
+        </script>
+        
+    </body>
+
+</html>
